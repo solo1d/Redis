@@ -6,11 +6,10 @@
     - [2、脚本启动](#2、脚本启动)
     - [配置运行方式和持久化文件、日志文件和存储位置的启动方式](#配置运行方式和持久化文件、日志文件和存储位置的启动方式)
   - [停止Redis](#停止Redis)
+  - [查看Redis配置](#查看Redis配置)
 - [Redis命令行客户端](#Redis命令行客户端)
-  - [Redis命令](#Redis命令)
   - [数据库相关命令](#数据库相关命令)
   - [修改运行时配置的命令](#修改运行时配置的命令)
-  - 
 
 
 
@@ -116,8 +115,35 @@ $ redis-server /路径/端口号.conf
 
 ```bash
 # 正常停止 Redis  ,直接执行的话会自动连接本地127.0.0.1 端口号为6379 的Redis服务器
-$redis-cli  SHUTDOWN
+$redis-cli -h 127.0.0.1 -p 6380  SHUTDOWN
+$redis-cli -h 127.0.0.1 -p 6380   SHUTDOWN NOSAVE NOW 
+
+或者交互模式下
+redis 127.0.0.1:6380> SHUTDOWN NOSAVE NOW 
 ```
+
+## 查看Redis配置
+
+```bash
+# Redis CONFIG 命令格式如下
+$ redis 127.0.0.1:6379> CONFIG GET CONFIG_SETTING_NAME
+
+# 查看日志等级
+$ redis 127.0.0.1:6379> CONFIG GET loglevel
+1) "loglevel"
+2) "notice"
+
+# 使用 * 号获取所有配置项：
+$ redis 127.0.0.1:6379> CONFIG GET *
+  1) "syslog-ident"
+  2) "redis"
+  3) "tcp-keepalive"
+  4) "300"
+  5) "propagation-error-behavior"
+  ......
+```
+
+
 
 
 
@@ -132,61 +158,10 @@ $ redis-cli  -h IP地址  -p  端口号
 #PING 测试客户端和Redis 的连接是否正常
 $ redis-cli PING 
    # 或者  $ redis-cli  进入交互模式后，再执行 PING
-```
+   
+# 指定端口号和IP 地址, 并进入集群 redis （-c 参数）
+$ redis-cli  -c -h IP地址  -p  端口号
 
-### Redis命令
-
-```bash
-# 先连接，并进入交互模式
-$ redis-cli 
-
-127.0.0.1:6379> SET key bar   #设置键 key ,值为 bar ,默认是字符串 ， 如果不存在就默认新增
-OK
-
-127.0.0.1:6379> GET foo    # 获得键内容
-"1"                        # 获得的字符串由双引号包裹。如果不存在时会返回  (nil)  ,字符串回复
-
-
-127.0.0.1:6379> KEYS *    #  KEYS 命令是获取数据库中符合指定规则的键名，支持通配符规则
-1) "key"									# 多行字符串回复，请求一个非字符串类型键的元素列表时 会收到多行字符串回复。
-2) "foo"
-
-127.0.0.1:6379> EXISTS foo   # EXISTS 判断一个键是否存在。 
-(integer) 1									 # 返回为1时， 表示存在
-
-
-127.0.0.1:6379> DEL foo      # 删除键，后面可以跟多个键。 但不支持通配符。可以通过命令行来实现
-(integer) 1		 	             # 返回为1时， 表示删除成功
-
-127.0.0.1:6379> TYPE foo	   # TYPE 获得键值的数据类型
-string										   # 代表是 foo 字符串
-
-127.0.0.1:6379> INCR foo    #INCR 会递增 foo 键值的的内容（返回整数），原子操作
-(integer) 1									#返回内容， integer 代表返回的是整数 ,整数回复
-
-
-127.0.0.1:6379> DBSIZE     # DBSIZE 命令会获取当前数据库中键的数量
-(integer) 1									#返回内容， integer 代表返回的是整数, 整数回复
-
-
-```
-
-
-
-#### 数据库相关命令
-
-```bash
-# 切换数据库命令 ,数据库默认从0开始， 而且默认支持16个数据库，可以通过配置来进行修改
-# 先连接，并进入交互模式
-$ redis-cli 
-
-# 切换库
-127.0.0.1:6379[1]> SELECT 0   # 由目前所在的1号数据库 切换到 0号数据库
-
-
-# 清空数据库中的所有内容
-127.0.0.1:6379> FLUSHALL   #  FLUSHALL 命令会清空数据库中的所有内容
-OK
 ```
 
 
@@ -207,6 +182,24 @@ redis> CONFIG SET loglevel warning    # 配置日志等级
 1) "databases"	
 2) "16"
 
+```
+
+
+
+#### 数据库相关命令
+
+```bash
+# 切换数据库命令 ,数据库默认从0开始， 而且默认支持16个数据库，可以通过配置来进行修改
+# 先连接，并进入交互模式
+$ redis-cli  -c  -p 端口号  -h ip
+
+# 切换库
+127.0.0.1:6379[1]> SELECT 0   # 由目前所在的1号数据库 切换到 0号数据库
+
+
+# 清空数据库中的所有内容
+127.0.0.1:6379> FLUSHALL   #  FLUSHALL 命令会清空数据库中的所有内容
+OK
 ```
 
 
