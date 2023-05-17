@@ -153,15 +153,15 @@ redis-cli 可将命令内容作为参数执行，也可以进入交互式模式�
 
 ```bash
 # 指定端口号和IP 地址
-$ redis-cli  -h IP地址  -p  端口号
+# --raw  可以避免中文乱码。
+$ redis-cli --raw  -h IP地址  -p  端口号  -a 密码
 
-#PING 测试客户端和Redis 的连接是否正常
-$ redis-cli PING 
-   # 或者  $ redis-cli  进入交互模式后，再执行 PING
-   
 # 指定端口号和IP 地址, 并进入集群 redis （-c 参数）
 $ redis-cli  -c -h IP地址  -p  端口号
 
+#PING 测试客户端和Redis 的连接是否正常
+$ redis-cli -h IP地址  -p  端口号 PING 
+   # 或者  $ redis-cli  进入交互模式后，再执行 PING
 ```
 
 
