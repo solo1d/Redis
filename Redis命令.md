@@ -10,6 +10,7 @@
 # 指定端口号和IP 地址
 # --raw  可以避免中文乱码。
 $ redis-cli --raw  -h IP地址  -p  端口号  -a 密码
+	需要登录后使用 AUTH 密码   进行密码验证
 
 # 指定端口号和IP 地址, 并进入集群 redis （-c 参数）
 $ redis-cli  -c -h IP地址  -p  端口号
